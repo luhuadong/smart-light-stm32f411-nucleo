@@ -1,8 +1,8 @@
-# STM32F411-Nucleo-64 开发板 BSP 说明
+# Smart Light 项目说明
 
 ## 简介
 
-本文档为 RT-Thread 开发团队为 STM32F411-Nucleo-64 开发板提供的 BSP (板级支持包) 说明。
+Smart Light 项目基于 RT-Thread 为 STM32F411-Nucleo-64 开发板提供的 BSP (板级支持包) 工程。
 
 主要内容如下：
 
@@ -30,6 +30,14 @@
 - 调试接口，板载 ST-LINK/V2-1 调试器。
 
 开发板更多详细信息请参考意法半导体 [STM32F411-Nucleo-64 开发板介绍](https://www.st.com/en/evaluation-tools/nucleo-f411re.html)。
+
+
+
+### NUCLEO-F411RE 引脚分布
+
+![](./figures/NUCLEO-F411RE-PIN-LAYOUT.png)
+
+
 
 ## 外设支持
 
@@ -60,6 +68,40 @@
 #### 硬件连接
 
 使用 Type-A to Mini-B 线连接开发板和 PC 供电，红色 LED LD3 (PWR) 和 LD1 (COM) 会点亮。
+
+NUCLEO 板与 WiFi 模块的接线如下：
+
+| RW007 模块 | STM32 开发板 |   功能    |
+| :--------: | :----------: | :-------: |
+|    3.3V    |      3V      |    V+     |
+|    GND     |     GND      |    GND    |
+| SCK (D13)  |   PA5 (5)    | BOOT0/CLK |
+| MISO (D12) |   PA6 (6)    |   MISO    |
+| MOSI (D11) |   PA7 (7)    |   MOSI    |
+|  CS (D10)  |   PB6 (22)   | BOOT1/CS  |
+|     D9     |   PC7 (39)   | INT/BUSY  |
+|     D8     |   PA9 (9)    |   RESET   |
+
+
+
+RW007 支持 AT 模式和 SPI 模式。其中 AT 模式下，RW007 内嵌 LwIP 协议栈，SPI 模式下 RW007 不内置以太网协议栈，仅做以太网数据包透传。
+
+工作模式由上电时 BOOT0 BOOT1 的值确定，如下表所示。
+
+| BOOT0 | BOOT1 | 数据类型 | 接口 | 最大速率 | 内置协议栈 | 备注 |
+| :---: | :---: | :------: | :--: | :------: | :--------: | :--: |
+|   1   |   0   |   RAW    | SPI  |  30Mbps  |     否     |      |
+|   1   |   1   |    AT    | UART |  6Mbps   |     是     |      |
+
+
+
+#### 系统配置
+
+- SPI 外设以及 STM32CubeMX 配置管脚
+- WiFi 框架
+- rw007 软件包
+
+
 
 #### 编译下载
 
@@ -94,12 +136,26 @@ msh >
 
 本章节更多详细的介绍请参考 [STM32 系列 BSP 外设驱动使用教程](../docs/STM32 系列 BSP 外设驱动使用教程. md)。
 
-## 注意事项
+## 测试
 
-暂无
+WiFi 扫描
+
+```shell
+wifi scan
+```
+
+WiFi 连接
+
+```shell
+wifi_join [ssid] [password]
+```
+
+
+
+
 
 ## 联系人信息
 
 维护人:
 
-- [misonyo](https://github.com/misonyo) ，邮箱：<misonyo@foxmail.com>
+- [RudyLo](https://github.com/luhuadong) ，邮箱：<luhuadong@163.com>
